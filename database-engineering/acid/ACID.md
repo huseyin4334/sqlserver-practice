@@ -27,7 +27,9 @@
 - Transaction is an atom. It means that all queries of transaction a single unit of work.
 
 ## CONSISTENCY
-- Consistency is the property of a transaction that guarantees that the database remains in a consistent state before and after the transaction.
+- Consistency is the property of a transaction that guarantees that the database stays in a consistent state before and after the transaction.
+- Defining the rules that the database must follow to be in a consistent state.
+- So, any change maintains data integrity or is cancelled completely.
 
 ## ISOLATION
 - Isolation is the property of a transaction that guarantees that the execution of a transaction is isolated from the execution of other transactions.
@@ -45,18 +47,30 @@
       - It allows dirty reads, non-repeatable reads, and phantom reads.
     - Read Committed
       - This is the default isolation level in SQL Server. Each query in a transaction only sees committed changes by other transactions.
-      - It allows non-repeatable reads and phantom reads.
-    - Repeatable Read
+      - It's not take any snapshot. When we start a transaction, we will see the committed changes by other transactions.
+      - And we will continue to see the committed changes by other transactions until we commit the transaction.
+    - Repeatable Read (Snapshot Isolation Level)
       - This isolation level prevents dirty reads and non-repeatable reads and lost updates.
-      - When we read data, it locks the rows that we read. So, other transactions can't modify the data that we read.
-    - Snapshot
-      - This isolation level uses row versioning to provide transaction-level read consistency.
-      - It doesn't lock the table or row when reading data. It reads the data from the version store.
-      - If we have committed transactions, we won't see the changes until we commit our transaction.
+      - It's snapshots the committed or uncommitted data in the beginning of the transaction.
+      - You will see the same data with the beginning of the transaction until commit the transaction. Because of that, you can see the uncommitted changes by other transactions.
+      - But it allows phantom reads.
     - Serializable
-      - This is the highest isolation level. It locks the table when we read data.
-      - Other transactions can't modify or insert that table until we commit our transaction.
-      - It prevents dirty reads, non-repeatable reads, phantom reads, and lost updates.
+      - This is the highest isolation level. It's taking snapshot of all committed data in the beginning.
+      - When we start transaction with this level, we won't see any committed or uncommitted changes by other transactions.
+      - This is isolated us from all other transactions.
+> **Critical Note:** When I assume we started normal transaction and insert 1 row. But we didn't commit.
+> we have opened another transaction with repeatable read isolation level. We will see the inserted row in this transaction. But I didn't commit yet.
+> I insert a row from normal transaction again. But I won't see inserted row in repeatable read transaction. Because we said repeatable read isolation level will show us the same data with beginning of the transaction.
+> But if we use serializable isolation level, we won't see the inserted 2 rows in the second transaction. Because it's not showing us any uncommitted changes.
+
+![repeatable-read](/../sources/repeatable-read.png)
+![serialization](/../sources/serializable.png)
+
+> Critical Note: When you use repeatable read isolation level, Every transaction can change the same table.
+> That means first transaction change data and commit. Second transaction can change something too and commit.
+> It will be ok.
+> But when you use serializable isolation level, just 1 transaction can change the same table. 
+> Other transactions have to begin after the first transaction is committed.
 
 ![isolations](/../sources/isolations.png)
 
@@ -70,3 +84,23 @@
   - It is used in the Snapshot isolation level.
 - Repeatable Read isolation level uses row level locks to avoid lost updates.
 - Serializable isolation level uses table level locks to avoid lost updates.
+
+## DURABILITY
+- Durability is the property of a transaction that guarantees that the changes made by a transaction are permanent and are not lost.
+- For example, I have a transaction that inserts a row into a table. If the transaction is committed but database server is crashed, the row that is inserted by the transaction is not lost. Because I sent commit command to the server.
+- Durability is achieved by writing the changes to the database's transaction log.
+- The transaction log is a file that contains all the changes made by the transactions.
+- When a transaction is committed, the changes are written to the transaction log.
+- If the database server is crashed, the changes are read from the transaction log and applied to the database.
+- Durability techniques; (Default is Write-Ahead Logging (WAL) in SQL Server)
+  - Write-Ahead Logging (WAL)
+    - It is a technique that writes the changes to the transaction log before the changes are written to the database.
+  - Shadow Paging (Asynchronous Snapshot)
+    - It is a technique that creates a shadow copy of the database before the changes are made by the transaction. 
+  - Journaling
+    - It is a technique that writes the changes to the journal before the changes are written to the database. (Journal is a file that contains all the changes made by the transactions.) 
+  - Log Structured File System (LSFS)
+    - It is a file system that writes the changes to the transaction log before the changes are written to the database.
+    - File system is a system that manages the storage of data in a computer.
+  - ....
+

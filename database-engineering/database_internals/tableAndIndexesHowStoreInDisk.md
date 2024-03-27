@@ -1,0 +1,56 @@
+# How Tables and Indexes are Stored in Disk
+
+## Storage Concepts
+- [Pdf File](../sources/How+tables+and+indexes+are+stored+on+disk.pdf)
+- Table
+  - Table is 
+- Row_id (tuple_id)
+  - Row_id is a unique identifier for each row in a table. But it is not stored in the table.
+  - Some databases like PostgreSQL, etc. store the row_id in internal.
+  - Some databases like MySQL, etc. do not store the row_id in internal. It's using the primary key as a row_id.
+- Page
+  - Page is a block of data (unit of data).
+  - It is the smallest unit of data that can be read or written from disk. 
+  - Therefore, The database can not read only one row from disk. It reads the whole page.
+  - Page size is 4KB, 8KB, 16KB, etc.
+  - 1 page can store multiple rows. Depends on the size of the row.
+  - Every page storing bytes of data.
+    -  For example, 1,200,Ahmet|2,201,Mehmet|3,202,Hasan,... 10 rows. stored in a page like this.
+    - Every row converted to bytes and stored in the page.
+    - If we execute a query like `SELECT * FROM table WHERE id=100`, 
+    - Database begin to read the all pages from disk until it finds the row with id=100.
+    - In this time, In every page, database read all page and convert bytes to rows and search the row with id=100.
+- IO
+  - IO is the process of reading or writing data from disk.
+  - We try to minimize this as much as possible.
+  - Because it is the expensive operation.
+- Heap Data Structure
+  - Heap is a data structure where the table is stored with all its pages.
+  - If we insert a new row, the database adds the row to the last page of the table.
+  - If the page is full, the database creates a new page and adds the row to the new page.
+  - If we have so many pages, when we execute a query, the database reads all pages from disk until it finds the row.
+  - Because of this, we need to use indexes.
+  - Heap table is generally organized around a single index. This index called clustered index.
+  - This index is the primary key of the table for so many databases. But in some databases using secondary indexes (row_id).
+- Index Data Structure (B-Tree, Hash, R-Tree, etc.)
+  - Index is a data structure that stores key (row_id, page_number). That's a row for index.
+  - Indexes are stored like pages too.
+  - Index is a pointer of the row.
+  - In this way, we can quickly search what we want.
+  - If we execute a query like `SELECT * FROM table WHERE id=10000000`
+  - the database reads the index table and finds id 10000000 in the index table.
+  - Then the database reads the founded page directly from disk and find the row_id.
+  - In this time, the database reads fewer pages from disk.
+
+## Notes
+- OLTP (Online Transaction Processing) databases are generally using B-Tree indexes.
+  - Row based databases are generally using B-Tree indexes.
+- OLAP (Online Analytical Processing) databases are generally using R-Tree indexes.
+  - Column based databases are generally using R-Tree indexes. 
+- https://learn.microsoft.com/en-us/sql/relational-databases/pages-and-extents-architecture-guide?view=sql-server-ver16
+- Page Layout is different for every database.
+  - But the concept is the same.
+  - Page header, row offset, row data, etc.
+  - Page header contains metadata about the page. Like page number, page type, free space, etc. (24 bytes fixed)
+  - Row offset contains the offset of the row in the page. (4 bytes per row)
+  - Row data contains the row data. (variable bytes per row)

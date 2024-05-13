@@ -54,7 +54,7 @@
     - Repeatable Read (Snapshot Isolation Level)
       - This isolation level prevents dirty reads and non-repeatable reads and lost updates.
       - It's snapshots the committed or uncommitted data in the beginning of the transaction.
-      - When other transactions inserted data and committed, we won't see it in postgreSQL, but we will see it in other databases.
+      - When other transactions inserted data and committed, we won't see uncommitted data in postgreSQL, but we will see it in other databases.
       - You will see the same data with the beginning of the transaction until commit the transaction. Because of that, you can see the uncommitted changes by other transactions.
       - BEGIN TRANSACTION WITH ISOLATION LEVEL REPEATABLE READ
     - Serializable
@@ -75,6 +75,12 @@
 > It will be ok.
 > But when you use serializable isolation level, just 1 transaction can change the same table. 
 > Other transactions have to begin after the first transaction is committed.
+
+> Critical Note: With transaction 1 as READ COMMITTED, you can update a row in transaction 2 after you selected it in transaction 1. 
+> With transaction 1 as REPEATABLE READ, you cannot update a row in transaction 2 after you selected it in transaction 1.
+> Then, we prevent lost updates with REPEATABLE READ isolation level with locked the row.
+> But with transaction 1 as SERIALIZABLE, you cannot update a row in transaction 2 after you selected table in transaction 1.
+> Then, we prevent lost updates with SERIALIZABLE isolation level with locked the table.
 
 ![isolations](/../sources/isolations.png)
 

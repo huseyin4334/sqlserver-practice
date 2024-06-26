@@ -70,17 +70,22 @@
 ![repeatable-read](/../sources/repeatable-read.png)
 ![serialization](/../sources/serializable.png)
 
-> Critical Note: When you use repeatable read isolation level, Every transaction can change the same table.
+> **Critical Note:** When you use repeatable read isolation level, Every transaction can change the same table.
 > That means first transaction change data and commit. Second transaction can change something too and commit.
 > It will be ok.
 > But when you use serializable isolation level, just 1 transaction can change the same table. 
 > Other transactions have to begin after the first transaction is committed.
 
-> Critical Note: With transaction 1 as READ COMMITTED, you can update a row in transaction 2 after you selected it in transaction 1. 
+> **Critical Note:** With transaction 1 as READ COMMITTED, you can update a row in transaction 2 after you selected it in transaction 1. 
 > With transaction 1 as REPEATABLE READ, you cannot update a row in transaction 2 after you selected it in transaction 1.
 > Then, we prevent lost updates with REPEATABLE READ isolation level with locked the row.
 > But with transaction 1 as SERIALIZABLE, you cannot update a row in transaction 2 after you selected table in transaction 1.
 > Then, we prevent lost updates with SERIALIZABLE isolation level with locked the table.
+ 
+
+> **Note:** If we don't want to changeable data while we are changing data;
+> SELECT * FROM employees WHERE id = 1 FOR UPDATE; -- we lock the selected rows with exclusive lock in read committed isolation level.
+> SELECT * FROM employees WHERE id = 1; -- If we start the repeatable read isolation level, this select will work like "**for update**" command. Because this isolation level uses exclusive lock default when update, delete, etc. commands.
 
 ![isolations](/../sources/isolations.png)
 

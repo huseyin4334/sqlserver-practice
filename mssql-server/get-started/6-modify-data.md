@@ -233,13 +233,6 @@ EXEC sp_sequence_get_range
 ``` 
 
 
-
-
-
-
-
-
-
 # Update Data
 - The UPDATE statement in T-SQL is used to change existing data in a table. 
 - UPDATE operates on a set of rows, either defined by a condition in a WHERE clause or defined in a join.
@@ -305,14 +298,6 @@ TRUNCATE TABLE Sales.Sample;
 ```
 
 
-
-
-
-
-
-
-
-
 # Merge Data Based on multiple tables
 - This DML option allows you to synchronize two tables by inserting, updating, or deleting rows in one table based on differences found in the other table.
 - MERGE modifies data, based on one or more conditions:
@@ -355,3 +340,7 @@ WHEN NOT MATCHED BY TARGET THEN -- BY TARGET is optional
 --WHEN NOT MATCHED BY SOURCE THEN
 --    DELETE;
 ```
+
+
+# References
+https://learn.microsoft.com/en-us/training/modules/modify-data-with-transact-sql/

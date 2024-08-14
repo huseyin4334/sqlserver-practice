@@ -134,3 +134,6 @@ WHERE p.ProductModelID = m.ProductModelID;
            LEFT OUTER JOIN HR.Employee AS mgr
                            ON emp.ManagerID = mgr.EmployeeID;
 ```
+
+# References
+https://learn.microsoft.com/en-us/training/modules/query-multiple-tables-with-joins/

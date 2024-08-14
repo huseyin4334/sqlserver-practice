@@ -116,21 +116,6 @@ ORDER BY CustomerID, OrderDate;
 - Logically, the outer query runs first, and for each row returned, the inner query is processed.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Working With Exists And Not Exists
 - The EXISTS operator is used to test for the existence of any rows in a subquery.
 - It's working with a correlated subquery.
@@ -158,3 +143,7 @@ WHERE EXISTS
          FROM Sales.SalesOrderHeader AS o
          WHERE o.CustomerID = c.CustomerID);
 ```
+
+
+# References
+https://learn.microsoft.com/en-us/training/modules/write-subqueries/

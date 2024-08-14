@@ -378,7 +378,6 @@ FROM t1;
 | 150          | 6              | 5              | 30      | 25            |
 
 
-
 # Group By
 - The GROUP BY clause groups rows that have the same values into summary rows, like "find the number of customers in each country".
 - when your SELECT statement is processed, after the FROM clause and WHERE clause have been evaluated, a virtual table is created. 
@@ -466,3 +465,8 @@ HAVING COUNT(*) > 10;
 
 
 
+
+
+
+# References
+https://learn.microsoft.com/en-us/training/modules/use-built-functions-transact-sql/

@@ -11,7 +11,7 @@
 ## Example
 - We will build an url shortener.
 
-``` sql
+```sql
 
 -- init.sql file
 

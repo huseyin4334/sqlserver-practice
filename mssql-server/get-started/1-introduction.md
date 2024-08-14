@@ -242,7 +242,7 @@ FROM Person.Person;
 ```
 
 
-## Statements
+# Statements
 
 ## SELECT Statement
 - The SELECT statement is used to retrieve data from a database.
